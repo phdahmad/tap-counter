@@ -4,7 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#5C0A2E">
-<title>عدّاد</title>
+<meta name="color-scheme" content="dark light">
+
+<!-- Primary SEO -->
+<title>عدّاد — تطبيق عد رقمي بالعربية مجاني | Tap Counter</title>
+<meta name="description" content="عدّاد رقمي مجاني بسيط وأنيق يعمل على المتصفح بدون تنزيل. اضغط للعد، اسحب للتصفير، خصّص الألوان وحجم الخط. مثالي للتسبيح والذكر، إحصاء الأشياء، عد التمارين الرياضية. يحفظ تلقائياً ويعمل بدون إنترنت.">
+<meta name="keywords" content="عداد, عداد رقمي, عداد للجوال, مسبحة رقمية, عداد تسبيح, تطبيق عد, عداد مجاني, counter, tap counter, tasbeeh counter, digital tasbeeh, arabic counter">
+<meta name="author" content="د. احمد الهندي - Dr. Ahmad Al-Hindi">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="googlebot" content="index, follow">
+<meta name="application-name" content="عدّاد">
+<meta name="apple-mobile-web-app-title" content="عدّاد">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="canonical" href="https://phdahmad.github.io/tap-counter/">
+<link rel="manifest" href="manifest.json">
+
+<!-- Favicon (inline SVG) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%235C0A2E'/%3E%3Ctext x='50' y='75' font-family='Georgia,serif' font-size='72' font-weight='300' fill='%23F5F0E8' text-anchor='middle'%3E1%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="عدّاد">
+<meta property="og:title" content="عدّاد — تطبيق عد رقمي بالعربية">
+<meta property="og:description" content="عدّاد رقمي بسيط وأنيق. اضغط للعد، اسحب للتصفير، خصّص الألوان والحجم. يعمل بدون إنترنت ويحفظ تلقائياً.">
+<meta property="og:url" content="https://phdahmad.github.io/tap-counter/">
+<meta property="og:image" content="https://phdahmad.github.io/tap-counter/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="تطبيق عدّاد — عداد رقمي عربي بسيط وأنيق">
+<meta property="og:locale" content="ar_SA">
+<meta property="og:locale:alternate" content="en_US">
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="عدّاد — تطبيق عد رقمي بالعربية">
+<meta name="twitter:description" content="عدّاد رقمي بسيط وأنيق. يعمل بدون إنترنت، يحفظ تلقائياً، ومجاني بالكامل.">
+<meta name="twitter:image" content="https://phdahmad.github.io/tap-counter/og-image.png">
+<meta name="twitter:creator" content="@phdahmad">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,200;9..144,300&family=Inter:wght@400;500&display=swap" rel="stylesheet">
@@ -28,12 +69,8 @@
   html, body {
     height: 100%;
     overflow: hidden;
+    overscroll-behavior: none;
     touch-action: manipulation;
-  }
-
-  /* allow browser pull-to-refresh on mobile */
-  html {
-    overscroll-behavior-y: auto;
   }
 
   body {
@@ -442,6 +479,44 @@
     100% { opacity: 0; }
   }
 
+  /* ============ PULL TO REFRESH ============ */
+  .ptr-indicator {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    width: 38px;
+    height: 38px;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    color: var(--fg);
+    transform: translate3d(-50%, -60px, 0) rotate(0deg);
+    will-change: transform, opacity;
+  }
+
+  .ptr-indicator svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .ptr-indicator.snap-back {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
+  }
+
+  .ptr-indicator.refreshing svg {
+    animation: ptrSpin 0.7s linear infinite;
+    transform-origin: 50% 50%;
+  }
+
+  @keyframes ptrSpin {
+    to { transform: rotate(360deg); }
+  }
+
   /* ============ ABOUT SECTION ============ */
   .about-block {
     padding: 0.5rem 0 0;
@@ -515,9 +590,313 @@
     --ui-opacity: 0;
     --ui-pointer: none;
   }
+
+  /* ============ SCREEN-READER / SEO CONTENT ============ */
+  .sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
 </style>
+
+
+<!-- Structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "عدّاد - Tap Counter",
+  "alternateName": [
+    "Tap Counter",
+    "Counter",
+    "عداد رقمي"
+  ],
+  "url": "https://phdahmad.github.io/tap-counter/",
+  "description": "عدّاد رقمي تفاعلي يعمل على المتصفح. يستخدم للتسبيح والذكر، إحصاء الأشياء، عد التمارين الرياضية، أو أي مهمة عد متكرر. يدعم التخصيص الكامل للألوان وحجم الخط، يحفظ القيمة تلقائياً، ويعمل بدون إنترنت.",
+  "applicationCategory": "UtilityApplication",
+  "applicationSubCategory": "Productivity",
+  "operatingSystem": "Any (Web Browser)",
+  "browserRequirements": "Requires JavaScript. Modern browser (Chrome, Safari, Firefox, Edge).",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "inLanguage": [
+    "ar",
+    "en"
+  ],
+  "isAccessibleForFree": true,
+  "author": {
+    "@type": "Person",
+    "name": "د. احمد الهندي",
+    "alternateName": "Dr. Ahmad Al-Hindi",
+    "jobTitle": "خبير تقني ومطور تطبيقات ذكاء اصطناعي",
+    "url": "https://www.linkedin.com/in/phdahmad",
+    "sameAs": [
+      "https://github.com/phdahmad",
+      "https://www.linkedin.com/in/phdahmad"
+    ]
+  },
+  "creator": {
+    "@type": "Person",
+    "name": "د. احمد الهندي",
+    "url": "https://www.linkedin.com/in/phdahmad"
+  },
+  "datePublished": "2026-05-16",
+  "dateModified": "2026-05-16",
+  "featureList": [
+    "عد بضغطة واحدة",
+    "إعادة تصفير بالضغط المطول",
+    "زر إنقاص",
+    "٢٠ لون للخلفية",
+    "١٠ ألوان للنص",
+    "تكبير وتصغير الخط",
+    "حفظ تلقائي",
+    "يعمل بدون إنترنت",
+    "اهتزاز عند الضغط",
+    "واجهة دنيا اختيارية"
+  ],
+  "screenshot": "https://phdahmad.github.io/tap-counter/og-image.png"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "ما هو تطبيق عدّاد؟",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "تطبيق عدّاد ويب مجاني يعمل من المتصفح بدون تنزيل، مصمم للعد المتكرر بطريقة بسيطة وأنيقة. يستخدم للتسبيح والذكر، إحصاء الأشياء، عد التمارين، وغيرها."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "كيف أستخدم العدّاد؟",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "اضغط في أي مكان على الشاشة لزيادة العدد بواحد. استخدم زر − في الأسفل للإنقاص. اضغط مطولاً لمدة ٠٫٨ ثانية في وسط الشاشة لإعادة التصفير. اضغط على أيقونة الإعدادات أو المظهر للتخصيص."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "هل يحفظ العدّاد القيمة عند إغلاق الصفحة؟",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "نعم، يحفظ العدد وكل الإعدادات (الألوان، حجم الخط، الإعدادات) تلقائياً في متصفحك ويستعيدها عند العودة للموقع."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "هل يعمل بدون إنترنت؟",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "نعم، بعد فتح الموقع لأول مرة يصبح متاحاً بدون اتصال بالإنترنت. التطبيق صفحة واحدة مكتفية ذاتياً."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "هل التطبيق مجاني؟",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "نعم، التطبيق مجاني تماماً وبدون إعلانات أو اشتراكات أو مشتريات داخل التطبيق."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "على أي أجهزة يعمل؟",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "يعمل على جميع الأجهزة: الجوال (iOS و Android)، التابلت، اللابتوب، وأجهزة الكمبيوتر المكتبية. يحتاج فقط متصفح حديث."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "هل يدعم اللغة العربية؟",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "نعم، التطبيق مصمم خصيصاً للمستخدم العربي مع دعم كامل لاتجاه RTL وواجهة بالعربية، ويصلح للتسبيح والذكر."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "من طوّر هذا التطبيق؟",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "طوّر التطبيق د. احمد الهندي، خبير تقني ومطور تطبيقات ذكاء اصطناعي. للتواصل: linkedin.com/in/phdahmad"
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "كيفية استخدام تطبيق عدّاد",
+  "description": "خطوات بسيطة لاستخدام تطبيق العدّاد الرقمي",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "فتح الموقع",
+      "text": "افتح الرابط https://phdahmad.github.io/tap-counter/ في أي متصفح حديث."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "زيادة العدد",
+      "text": "اضغط في أي مكان على الشاشة لزيادة العدد بواحد."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "إنقاص العدد",
+      "text": "اضغط على زر − في الزاوية السفلية للإنقاص."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "التصفير",
+      "text": "اضغط مطولاً لمدة ٠٫٨ ثانية في وسط الشاشة لإعادة العدد إلى صفر."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "التخصيص",
+      "text": "افتح الإعدادات لتغيير الألوان، حجم الخط، وتفعيل الاهتزاز."
+    }
+  ],
+  "totalTime": "PT1M"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "د. احمد الهندي",
+  "alternateName": "Dr. Ahmad Al-Hindi",
+  "jobTitle": "خبير تقني ومطور تطبيقات ذكاء اصطناعي",
+  "email": "phdahmad@gmail.com",
+  "url": "https://www.linkedin.com/in/phdahmad",
+  "sameAs": [
+    "https://github.com/phdahmad",
+    "https://www.linkedin.com/in/phdahmad"
+  ]
+}
+</script>
 </head>
 <body>
+
+  <!-- SEO / GEO content (visually hidden, readable by crawlers and screen readers) -->
+  <div class="sr-only">
+    <header>
+      <h1>عدّاد — تطبيق عد رقمي بالعربية مجاني</h1>
+      <p>عدّاد رقمي ويب مجاني بسيط وأنيق، يعمل على جميع الأجهزة بدون تنزيل. مصمم للعد المتكرر سواء للتسبيح والذكر، إحصاء الأشياء، عد التمارين الرياضية، متابعة الأهداف اليومية، أو أي مهمة تتطلب عداً متكرراً. تطبيق صفحة واحدة (SPA) يحفظ العدد والإعدادات تلقائياً في المتصفح ويعمل بدون اتصال بالإنترنت.</p>
+    </header>
+
+    <section>
+      <h2>المميزات الرئيسية</h2>
+      <ul>
+        <li>عد بضغطة واحدة على أي مكان من الشاشة</li>
+        <li>إعادة تصفير بالضغط المطول لمدة ٠٫٨ ثانية</li>
+        <li>زر إنقاص في الزاوية السفلية للتراجع عن الزيادات الخاطئة</li>
+        <li>سحب الصفحة للأسفل لإعادة تحميلها (Pull to Refresh)</li>
+        <li>عشرون لوناً للخلفية وعشرة ألوان للنص</li>
+        <li>تحكم في حجم خط العدّاد من ٦٠٪ إلى ١٥٠٪</li>
+        <li>حفظ تلقائي للعدد وكل الإعدادات في المتصفح (localStorage)</li>
+        <li>يعمل بدون إنترنت بعد التحميل الأول (Offline-first)</li>
+        <li>اهتزاز خفيف عند الضغط على الأجهزة المدعومة</li>
+        <li>واجهة دنيا اختيارية تخفي الأزرار بعد ٣ ثوان للتركيز</li>
+        <li>دعم كامل للغة العربية واتجاه RTL</li>
+        <li>أنيميشن لطيف وتجربة مستخدم سلسة</li>
+        <li>مجاني تماماً، بدون إعلانات، بدون اشتراكات</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>كيفية الاستخدام</h2>
+      <ol>
+        <li>افتح الرابط https://phdahmad.github.io/tap-counter/ في أي متصفح حديث.</li>
+        <li>اضغط في أي مكان على الشاشة لزيادة العدد بواحد.</li>
+        <li>اضغط على زر ناقص في الزاوية السفلية لإنقاص العدد.</li>
+        <li>اضغط مطولاً لمدة ٠٫٨ ثانية في وسط الشاشة لإعادة العدد إلى صفر.</li>
+        <li>اضغط على أيقونة الترس لفتح الإعدادات وتخصيص التطبيق.</li>
+        <li>اضغط على أيقونة الدائرة لتغيير الألوان.</li>
+        <li>اسحب الصفحة للأسفل من أعلاها لإعادة تحميلها.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>الأسئلة الشائعة</h2>
+
+      <h3>ما هو تطبيق عدّاد؟</h3>
+      <p>تطبيق عدّاد رقمي ويب مجاني، صفحة واحدة بسيطة وأنيقة تعمل من المتصفح بدون الحاجة للتنزيل أو التثبيت. مصمم للعد المتكرر.</p>
+
+      <h3>هل التطبيق مجاني؟</h3>
+      <p>نعم، التطبيق مجاني تماماً وبدون أي إعلانات أو اشتراكات أو مشتريات داخل التطبيق.</p>
+
+      <h3>هل يحفظ العدّاد القيمة؟</h3>
+      <p>نعم، يحفظ العدد وجميع الإعدادات (الألوان، حجم الخط، خيارات العرض) تلقائياً في متصفحك، وتعود كل القيم كما تركتها عند فتح الموقع مرة أخرى.</p>
+
+      <h3>هل يعمل بدون إنترنت؟</h3>
+      <p>نعم، بعد فتح الموقع لأول مرة يصبح متاحاً بدون اتصال بالإنترنت. كل الملفات اللازمة محملة في متصفحك.</p>
+
+      <h3>على أي أجهزة يعمل التطبيق؟</h3>
+      <p>يعمل على جميع الأجهزة: الجوال (iOS و Android)، التابلت، اللابتوب، وأجهزة الكمبيوتر المكتبية. متطلباته متصفح حديث فقط (Chrome، Safari، Firefox، Edge).</p>
+
+      <h3>هل يدعم اللغة العربية؟</h3>
+      <p>نعم، التطبيق مصمم خصيصاً للمستخدم العربي مع دعم كامل لاتجاه RTL وواجهة عربية بالكامل. مناسب للتسبيح والذكر والاستخدام اليومي.</p>
+
+      <h3>كيف أصفّر العدّاد؟</h3>
+      <p>اضغط مطولاً لمدة ٠٫٨ ثانية في وسط الشاشة. ستظهر دائرة تقدم في الأسفل، وعند اكتمالها يصفّر العدّاد ويظهر وميض بسيط للتأكيد.</p>
+
+      <h3>هل يمكن تكبير حجم الرقم؟</h3>
+      <p>نعم، من الإعدادات يوجد قسم "حجم العدّاد" بأزرار + و − لتكبير وتصغير الرقم من ٦٠٪ إلى ١٥٠٪.</p>
+
+      <h3>من طوّر هذا التطبيق؟</h3>
+      <p>طوّر التطبيق الدكتور أحمد الهندي، خبير تقني ومطور تطبيقات ذكاء اصطناعي. يمكن التواصل معه عبر LinkedIn على الرابط: https://www.linkedin.com/in/phdahmad</p>
+    </section>
+
+    <section>
+      <h2>الاستخدامات الشائعة</h2>
+      <ul>
+        <li>التسبيح والذكر والأدعية - بديل رقمي للمسبحة التقليدية</li>
+        <li>إحصاء الأشخاص في المناسبات والاجتماعات</li>
+        <li>عد التمارين الرياضية والتكرارات</li>
+        <li>إحصاء المخزون أو المنتجات</li>
+        <li>عد الأطفال في الرحلات المدرسية</li>
+        <li>متابعة الأهداف اليومية (شرب الماء، الخطوات، الصفحات المقروءة)</li>
+        <li>إحصاء السيارات أو الزبائن في الإحصاءات الميدانية</li>
+        <li>عد محاولات أو نقاط في الألعاب</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>تطوير: <span lang="ar">د. احمد الهندي</span> — خبير تقني ومطور تطبيقات ذكاء اصطناعي.</p>
+      <p>التواصل: <a href="https://www.linkedin.com/in/phdahmad">LinkedIn @phdahmad</a> · <a href="mailto:phdahmad@gmail.com">phdahmad@gmail.com</a> · <a href="https://github.com/phdahmad/tap-counter">كود المصدر على GitHub</a></p>
+    </footer>
+  </div>
+
+  <noscript>
+    <div style="position:fixed;inset:0;background:#5C0A2E;color:#F5F0E8;display:flex;align-items:center;justify-content:center;padding:2rem;text-align:center;font-family:serif;z-index:9999;">
+      هذا التطبيق يتطلب تفعيل JavaScript في متصفحك.
+    </div>
+  </noscript>
+
+  <!-- Pull-to-refresh indicator -->
+  <div class="ptr-indicator" id="ptrIndicator" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-6.219-8.56"/><polyline points="21 4 21 9 16 9"/></svg>
+  </div>
 
   <!-- Flash on reset -->
   <div class="flash" id="flash"></div>
@@ -630,7 +1009,7 @@
           <span>LinkedIn</span>
         </a>
       </div>
-      <div class="about-version">عدّاد · v1.1</div>
+      <div class="about-version">عدّاد · v1.2</div>
     </div>
   </div>
 
@@ -1027,6 +1406,72 @@
   const sizeUpBtn = $('sizeUp');
   if (sizeDownBtn) sizeDownBtn.addEventListener('click', () => adjustSize(-SIZE_STEP));
   if (sizeUpBtn) sizeUpBtn.addEventListener('click', () => adjustSize(+SIZE_STEP));
+
+  // ============ PULL TO REFRESH ============
+  const PTR_THRESHOLD = 75;
+  const PTR_MAX_PULL = 140;
+  const ptrEl = $('ptrIndicator');
+  let ptrStartY = 0;
+  let ptrPullY = 0;
+  let ptrTracking = false;
+  let ptrEligible = false;
+
+  function ptrUpdate(pull) {
+    const damped = Math.min(pull * 0.55, PTR_MAX_PULL);
+    const progress = Math.min(pull / PTR_THRESHOLD, 1);
+    const ty = -60 + damped;
+    ptrEl.style.transform = 'translate3d(-50%,' + ty + 'px,0) rotate(' + (progress * 270) + 'deg)';
+    ptrEl.style.opacity = progress;
+  }
+
+  function ptrReset() {
+    ptrEl.classList.add('snap-back');
+    ptrEl.style.transform = 'translate3d(-50%,-60px,0) rotate(0deg)';
+    ptrEl.style.opacity = '0';
+    setTimeout(() => ptrEl.classList.remove('snap-back'), 320);
+  }
+
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    // Skip if a sheet is open
+    if (themeSheet.classList.contains('open') || settingsSheet.classList.contains('open')) {
+      ptrTracking = false;
+      return;
+    }
+    ptrStartY = e.touches[0].clientY;
+    ptrPullY = 0;
+    ptrTracking = true;
+    ptrEligible = false;
+  }, { passive: true });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!ptrTracking) return;
+    ptrPullY = e.touches[0].clientY - ptrStartY;
+    if (ptrPullY > 8) {
+      ptrEligible = true;
+      ptrUpdate(ptrPullY);
+    } else if (ptrEligible) {
+      ptrUpdate(Math.max(ptrPullY, 0));
+    }
+  }, { passive: true });
+
+  function ptrFinish() {
+    if (!ptrTracking) return;
+    ptrTracking = false;
+    if (ptrEligible && ptrPullY >= PTR_THRESHOLD) {
+      ptrEl.classList.add('refreshing');
+      ptrEl.style.transform = 'translate3d(-50%,20px,0)';
+      ptrEl.style.opacity = '1';
+      haptic(15);
+      setTimeout(() => location.reload(), 180);
+    } else if (ptrEligible) {
+      ptrReset();
+    }
+    ptrEligible = false;
+  }
+
+  document.addEventListener('touchend', ptrFinish, { passive: true });
+  document.addEventListener('touchcancel', ptrFinish, { passive: true });
 
   // ============ INIT ============
   applyTheme();
