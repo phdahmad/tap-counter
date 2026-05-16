@@ -305,6 +305,27 @@
     transition: none;
   }
 
+  .row-stack {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .row-stack-label {
+    text-align: right;
+  }
+
+  .row-stack .segmented {
+    margin-left: 0;
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .row-stack .segmented button {
+    flex: 1;
+    text-align: center;
+  }
+
   .sheet-close {
     position: absolute;
     top: 14px;
@@ -430,6 +451,64 @@
     border-radius: 14px;
     border: 2px solid #1a1a1a;
     box-shadow: inset 0 0 0 3px #FAF7F2;
+  }
+
+  /* ============ CURATED THEMES ============ */
+  .themes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 0.5rem;
+  }
+
+  .theme-card {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    cursor: pointer;
+    position: relative;
+    border: none;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .theme-card:active {
+    transform: scale(0.92);
+  }
+
+  .theme-card-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .theme-card.active::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    border: 2px solid #1a1a1a;
+    box-shadow: inset 0 0 0 3px #FAF7F2;
+  }
+
+  .palette-note {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    color: #8a7f70;
+    margin: -0.4rem 0 0.6rem;
+    text-align: right;
+    line-height: 1.4;
+  }
+
+  .swatch.low-contrast {
+    opacity: 0.28;
+    transform: scale(0.93);
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   /* ============ TOGGLE ROWS ============ */
@@ -1030,10 +1109,14 @@
     <div class="sheet-handle"></div>
     <div class="sheet-title">المظهر</div>
 
-    <div class="section-label">الخلفية</div>
+    <div class="section-label">ثيمات جاهزة</div>
+    <div class="themes" id="themesGrid"></div>
+
+    <div class="section-label">مخصّص — الخلفية</div>
     <div class="palette" id="paletteBg"></div>
 
-    <div class="section-label">لون النص</div>
+    <div class="section-label">مخصّص — لون النص</div>
+    <div class="palette-note">الألوان الباهتة لها تباين ضعيف مع الخلفية الحالية</div>
     <div class="palette" id="paletteFg"></div>
   </div>
 
@@ -1073,15 +1156,16 @@
       <button class="toggle on" data-setting="animate"></button>
     </div>
 
-    <div class="row">
-      <div>
+    <div class="row row-stack">
+      <div class="row-stack-label">
         <div class="row-label">تأثير عند اللمس</div>
-        <div class="row-sub">اهتزاز (Android) أو صوت خفيف (iPhone)</div>
+        <div class="row-sub">اهتزاز (Android) · صوت (iPhone وغيره) · أو الاثنين</div>
       </div>
-      <div class="segmented" id="feedbackSeg" role="radiogroup" aria-label="تأثير عند اللمس">
+      <div class="segmented segmented-4" id="feedbackSeg" role="radiogroup" aria-label="تأثير عند اللمس">
         <button type="button" data-feedback="off" role="radio">إيقاف</button>
         <button type="button" data-feedback="vibrate" role="radio">اهتزاز</button>
         <button type="button" data-feedback="sound" role="radio">صوت</button>
+        <button type="button" data-feedback="both" role="radio">الاثنين</button>
       </div>
     </div>
 
@@ -1112,7 +1196,7 @@
           <span>LinkedIn</span>
         </a>
       </div>
-      <div class="about-version">عدّاد · v1.4</div>
+      <div class="about-version">عدّاد · v1.5</div>
     </div>
   </div>
 
@@ -1165,6 +1249,90 @@
     '#F5F0E8', '#ffffff', '#fefae0', '#e6e6e6', '#d4af37',
     '#1a1a1a', '#2d2d2d', '#5C0A2E', '#264653', '#3d1a4a'
   ];
+
+  // ============ CURATED THEMES (background + foreground designer pairs) ============
+  const themes = [
+    { name: 'نبيذي',     bg: '#5C0A2E', fg: '#F5F0E8' },
+    { name: 'ليلي',      bg: '#1a1a1a', fg: '#d4af37' },
+    { name: 'غابة',      bg: '#0d2818', fg: '#fefae0' },
+    { name: 'بحر',       bg: '#264653', fg: '#F5F0E8' },
+    { name: 'منتصف الليل', bg: '#1a2747', fg: '#F5F0E8' },
+    { name: 'بنفسجي',    bg: '#3d1a4a', fg: '#F5F0E8' },
+    { name: 'صحراء',     bg: '#7a3e2e', fg: '#fefae0' },
+    { name: 'زيتون',     bg: '#2d4a3e', fg: '#fefae0' },
+    { name: 'فحم',       bg: '#22223b', fg: '#F5F0E8' },
+    { name: 'زمرد',      bg: '#2a9d8f', fg: '#1a1a1a' },
+    { name: 'كريمي',     bg: '#FAF7F2', fg: '#5C0A2E' },
+    { name: 'وردي ناعم', bg: '#c9ada7', fg: '#22223b' }
+  ];
+
+  // ============ CONTRAST (WCAG) ============
+  function _hexToRgb(hex) {
+    const m = hex.replace('#','').match(/.{1,2}/g);
+    return m.map(h => parseInt(h, 16) / 255);
+  }
+  function _relLum([r,g,b]) {
+    const f = c => c <= 0.03928 ? c/12.92 : Math.pow((c+0.055)/1.055, 2.4);
+    return 0.2126*f(r) + 0.7152*f(g) + 0.0722*f(b);
+  }
+  function contrastRatio(hex1, hex2) {
+    const L1 = _relLum(_hexToRgb(hex1));
+    const L2 = _relLum(_hexToRgb(hex2));
+    const lo = Math.min(L1, L2), hi = Math.max(L1, L2);
+    return (hi + 0.05) / (lo + 0.05);
+  }
+
+
+  // ============ THEMES UI ============
+  function findActiveTheme() {
+    return themes.findIndex(t => t.bg.toLowerCase() === state.bg.toLowerCase()
+                              && t.fg.toLowerCase() === state.fg.toLowerCase());
+  }
+
+  function buildThemes() {
+    const grid = document.getElementById('themesGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    themes.forEach((t, i) => {
+      const card = document.createElement('button');
+      card.className = 'theme-card';
+      card.type = 'button';
+      card.style.background = t.bg;
+      card.style.color = t.fg;
+      card.setAttribute('aria-label', t.name);
+      card.dataset.index = i;
+      card.innerHTML = '<span class="theme-card-num">1</span>';
+      card.addEventListener('click', () => {
+        state.bg = t.bg;
+        state.fg = t.fg;
+        applyTheme();
+        save();
+        // Reflect in palettes + themes active state + contrast dimming
+        document.querySelectorAll('#paletteBg .swatch').forEach(sw =>
+          sw.classList.toggle('active', sw.dataset.color.toLowerCase() === t.bg.toLowerCase()));
+        document.querySelectorAll('#paletteFg .swatch').forEach(sw =>
+          sw.classList.toggle('active', sw.dataset.color.toLowerCase() === t.fg.toLowerCase()));
+        updateThemeActive();
+        updateContrastDimming();
+        haptic(8);
+      });
+      grid.appendChild(card);
+    });
+    updateThemeActive();
+  }
+
+  function updateThemeActive() {
+    const idx = findActiveTheme();
+    document.querySelectorAll('#themesGrid .theme-card').forEach((c, i) =>
+      c.classList.toggle('active', i === idx));
+  }
+
+  function updateContrastDimming() {
+    document.querySelectorAll('#paletteFg .swatch').forEach(sw => {
+      const ratio = contrastRatio(state.bg, sw.dataset.color);
+      sw.classList.toggle('low-contrast', ratio < 4.5);
+    });
+  }
 
   // ============ DOM ============
   const $ = id => document.getElementById(id);
@@ -1227,6 +1395,8 @@
         applyTheme();
         save();
         pBg.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === c));
+        updateThemeActive();
+        updateContrastDimming();
         haptic(5);
       });
       pBg.appendChild(b);
@@ -1242,6 +1412,7 @@
         applyTheme();
         save();
         pFg.querySelectorAll('.swatch').forEach(s => s.classList.toggle('active', s.dataset.color === c));
+        updateThemeActive();
         haptic(5);
       });
       pFg.appendChild(b);
@@ -1252,9 +1423,9 @@
   // Migrate legacy: boolean haptic → string feedback
   function migrateFeedback() {
     if (!state.settings.feedback || state.settings.feedback === 'auto') {
-      // First run with new schema: default to vibrate on devices that support it, else sound
+      // Default to sound — most reliable cross-platform (works on iOS and all Androids)
       if (state.settings.haptic === false) state.settings.feedback = 'off';
-      else state.settings.feedback = (typeof navigator.vibrate === 'function') ? 'vibrate' : 'sound';
+      else state.settings.feedback = 'sound';
     }
   }
   migrateFeedback();
@@ -1274,25 +1445,42 @@
     const ctx = getAudioCtx();
     if (!ctx) return;
     const t = ctx.currentTime;
+
+    // Triangle wave: warmer and more audible than pure sine on phone speakers
     const osc = ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(400, t);
+    osc.frequency.exponentialRampToValueAtTime(180, t + 0.04);
+
+    // Sub layer adds body so it's felt on iPhone speakers (low-end thump)
+    const sub = ctx.createOscillator();
+    sub.type = 'sine';
+    sub.frequency.setValueAtTime(120, t);
+    sub.frequency.exponentialRampToValueAtTime(70, t + 0.05);
+
     const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(110, t);
-    osc.frequency.exponentialRampToValueAtTime(55, t + 0.025);
     gain.gain.setValueAtTime(0, t);
-    gain.gain.linearRampToValueAtTime(0.18, t + 0.003);
-    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start(t);
-    osc.stop(t + 0.07);
+    gain.gain.linearRampToValueAtTime(0.30, t + 0.003);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.09);
+
+    osc.connect(gain);
+    sub.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t); sub.start(t);
+    osc.stop(t + 0.10); sub.stop(t + 0.10);
   }
 
-  function haptic(ms = 10) {
+  function haptic(ms = 35) {
     const mode = state.settings.feedback;
     if (mode === 'off') return;
+    // Use a longer vibration than before — Android filters very short pulses
+    const vibMs = Math.max(ms, 25);
     if (mode === 'vibrate' && navigator.vibrate) {
-      navigator.vibrate(ms);
+      try { navigator.vibrate(vibMs); } catch(e) {}
     } else if (mode === 'sound') {
+      try { playClick(); } catch(e) {}
+    } else if (mode === 'both') {
+      if (navigator.vibrate) { try { navigator.vibrate(vibMs); } catch(e) {} }
       try { playClick(); } catch(e) {}
     }
   }
@@ -1728,6 +1916,8 @@
   applySettings();
   applyFontScale();
   buildPalettes();
+  buildThemes();
+  updateContrastDimming();
 
 })();
 </script>
